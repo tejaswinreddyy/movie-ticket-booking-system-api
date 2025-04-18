@@ -21,13 +21,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails addUser(UserDetails user) {
         if(! userRepository.existsByEmail(user.getEmail())){
-            return copy(user);
+//            return copy(user);
+            switch (user.getUserRole()){
+                case USER -> copy(new User(), user);
+                case THEATER_OWNER -> copy(new TheaterOwner(), user);
+            }
         }
         throw new UserExistByEmailException("User with the Email is already exists");
     }
 
-    private UserDetails copy(UserDetails user){
-        UserDetails userRole = user.getUserRole()==UserRole.USER ? new User() : new TheaterOwner();
+    private UserDetails copy(UserDetails userRole, UserDetails user){
+//        UserDetails userRole = user.getUserRole()==UserRole.USER ? new User() : new TheaterOwner();
         userRole.setUserRole(user.getUserRole());
         userRole.setEmail(user.getEmail());
         userRole.setPassword(user.getPassword());
