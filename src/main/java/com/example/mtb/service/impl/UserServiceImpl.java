@@ -20,17 +20,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails addUser(UserDetails user) {
-        if(! userRepository.existsByEmail(user.getEmail())){
+        if (userRepository.existsByEmail(user.getEmail()))
+            throw new UserExistByEmailException("User with the Email is already exists");
 //            return copy(user);
-            switch (user.getUserRole()){
-                case USER -> copy(new User(), user);
-                case THEATER_OWNER -> copy(new TheaterOwner(), user);
-            }
+        switch (user.getUserRole()) {
+            case USER -> copy(new User(), user);
+            case THEATER_OWNER -> copy(new TheaterOwner(), user);
         }
-        throw new UserExistByEmailException("User with the Email is already exists");
+        System.out.println(user);
+        return user;
+
     }
 
-    private UserDetails copy(UserDetails userRole, UserDetails user){
+    private UserDetails copy(UserDetails userRole, UserDetails user) {
 //        UserDetails userRole = user.getUserRole()==UserRole.USER ? new User() : new TheaterOwner();
         userRole.setUserRole(user.getUserRole());
         userRole.setEmail(user.getEmail());
@@ -40,6 +42,7 @@ public class UserServiceImpl implements UserService {
         userRole.setPhoneNumber(user.getPhoneNumber());
         userRole.setUsername(user.getUsername());
         userRole.setUpdatedAt(user.getUpdatedAt());
+        userRole.setUserId(user.getUserId());
         userRepository.save(userRole);
         return userRole;
     }
