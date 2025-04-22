@@ -1,5 +1,6 @@
 package com.example.mtb.service.impl;
 
+import com.example.mtb.dto.UserRegistrationRequest;
 import com.example.mtb.entity.TheaterOwner;
 import com.example.mtb.entity.User;
 import com.example.mtb.entity.UserDetails;
@@ -19,30 +20,27 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails addUser(UserDetails user) {
-        if (userRepository.existsByEmail(user.getEmail()))
+    public UserDetails addUser(UserRegistrationRequest user) {
+        if (userRepository.existsByEmail(user.email()))
             throw new UserExistByEmailException("User with the Email is already exists");
 //            return copy(user);
-        switch (user.getUserRole()) {
+        UserDetails userDetails = switch (user.userRole()) {
             case USER -> copy(new User(), user);
             case THEATER_OWNER -> copy(new TheaterOwner(), user);
-        }
+        };
         System.out.println(user);
-        return user;
+        return userDetails;
 
     }
 
-    private UserDetails copy(UserDetails userRole, UserDetails user) {
+    private UserDetails copy(UserDetails userRole, UserRegistrationRequest user) {
 //        UserDetails userRole = user.getUserRole()==UserRole.USER ? new User() : new TheaterOwner();
-        userRole.setUserRole(user.getUserRole());
-        userRole.setEmail(user.getEmail());
-        userRole.setPassword(user.getPassword());
-        userRole.setCreatedAt(user.getCreatedAt());
-        userRole.setDateOfBirth(user.getDateOfBirth());
-        userRole.setPhoneNumber(user.getPhoneNumber());
-        userRole.setUsername(user.getUsername());
-        userRole.setUpdatedAt(user.getUpdatedAt());
-        userRole.setUserId(user.getUserId());
+        userRole.setUserRole(user.userRole());
+        userRole.setEmail(user.email());
+        userRole.setPassword(user.password());
+        userRole.setDateOfBirth(user.dateOfBirth());
+        userRole.setPhoneNumber(user.phoneNumber());
+        userRole.setUsername(user.username());
         userRepository.save(userRole);
         return userRole;
     }
