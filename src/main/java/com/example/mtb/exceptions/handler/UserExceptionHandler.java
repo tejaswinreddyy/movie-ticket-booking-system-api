@@ -1,6 +1,7 @@
 package com.example.mtb.exceptions.handler;
 
 import com.example.mtb.exceptions.UserExistByEmailException;
+import com.example.mtb.exceptions.UserNotFoundByEmailException;
 import com.example.mtb.util.ErrorStructure;
 import com.example.mtb.util.RestResponseBuilder;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,11 @@ public class UserExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorStructure> handleUserExistByEmailException(UserExistByEmailException ex){
         return responseBuilder.error(HttpStatus.OK, ex.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorStructure> handleUserNotFoundByEmailException(UserNotFoundByEmailException ex){
+        return responseBuilder.error(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
 }

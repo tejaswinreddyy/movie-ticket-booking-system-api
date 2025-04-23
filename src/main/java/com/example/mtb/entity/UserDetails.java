@@ -4,6 +4,7 @@ import com.example.mtb.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @Entity
 @Setter
 @Getter
+@ToString
 @EntityListeners(AuditingEntityListener.class)
 public class UserDetails {
     @Id
