@@ -6,6 +6,7 @@ import com.example.mtb.entity.Theater;
 import com.example.mtb.entity.TheaterOwner;
 import com.example.mtb.entity.UserDetails;
 import com.example.mtb.enums.UserRole;
+import com.example.mtb.exceptions.TheaterNotFoundByIdException;
 import com.example.mtb.exceptions.UserNotFoundByEmailException;
 import com.example.mtb.mapper.TheaterMapper;
 import com.example.mtb.repository.TheaterRepository;
@@ -26,15 +27,24 @@ public class TheaterServiceImpl implements TheaterService {
     @Override
     public TheaterResponse addTheater(String email, TheaterRegisterationRequest theaterRegisterationRequest) {
 
-        if(userRepository.existsByEmail(email) && userRepository.findByEmail(email).getUserRole() == UserRole.THEATER_OWNER ){
+        if (userRepository.existsByEmail(email) && userRepository.findByEmail(email).getUserRole() == UserRole.THEATER_OWNER) {
             UserDetails user = userRepository.findByEmail(email);
-           Theater theater = copy(theaterRegisterationRequest, new Theater(), user);
+            Theater theater = copy(theaterRegisterationRequest, new Theater(), user);
             return theaterMapper.theaterResponseMapper(theater);
         }
         throw new UserNotFoundByEmailException("No Theater Owner with the provided email is present");
     }
 
-    private Theater copy(TheaterRegisterationRequest registerationRequest, Theater theater , UserDetails userDetails){
+    @Override
+    public TheaterResponse findTheater(String theaterId) {
+        if(theaterRepository.existsById(theaterId)){
+            Theater theater = theaterRepository.findById(theaterId).get();
+            return theaterMapper.theaterResponseMapper(theater);
+        }
+        throw new TheaterNotFoundByIdException("Theater not found by the id");
+    }
+
+    private Theater copy(TheaterRegisterationRequest registerationRequest, Theater theater, UserDetails userDetails) {
         theater.setAddress(registerationRequest.address());
         theater.setCity(registerationRequest.city());
         theater.setName(registerationRequest.name());
