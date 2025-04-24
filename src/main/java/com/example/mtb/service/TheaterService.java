@@ -10,4 +10,6 @@ public interface TheaterService {
     TheaterResponse addTheater(String email, TheaterRegisterationRequest theaterRegisterationRequest);
 
     TheaterResponse findTheater(String theaterId);
+
+    TheaterResponse updateTheater(String theaterId, TheaterRegisterationRequest registerationRequest);
 }

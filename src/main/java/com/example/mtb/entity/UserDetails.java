@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
@@ -31,11 +32,11 @@ public class UserDetails {
     private UserRole userRole;
     private LocalDate dateOfBirth;
     private boolean isDelete;
-    private Instant deletedAt;
+    private LocalDateTime deletedAt;
 
     @CreatedDate
-    private Instant createdAt;
+    private LocalDateTime createdAt;
     @LastModifiedDate
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 
 }
