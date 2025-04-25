@@ -1,45 +1,42 @@
 package com.example.mtb.entity;
 
+import com.example.mtb.enums.ScreenType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-@Setter
 @Getter
+@Setter
+@EntityListeners(AuditingEntityListener.class)
 @ToString
-public class Theater {
+public class Screen {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String theaterId;
-    private String name;
-    private String address;
-    private String city;
-    private String landmark;
+    private String screenId;
+    private ScreenType screenType;
+    private Integer capacity;
+    private Integer noOfRows;
 
     @ManyToOne
-    private TheaterOwner theaterOwner;
+    private Theater theater;
 
-    @OneToMany(mappedBy = "theater")
-    private List<Screen> screens;
-
-
+    @OneToMany(mappedBy = "screen", cascade = CascadeType.PERSIST)
+    private List<Seat> seats;
 
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
     private String createdBy;
 
 
