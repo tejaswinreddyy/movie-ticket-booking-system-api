@@ -2,9 +2,8 @@ package com.example.mtb.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
 
-public record TheaterRegisterationRequest(
+public record TheaterRequest(
 
         @NotNull(message = "Name is required")
         @Size(min = 1, max = 20, message = "Name cannot be blank")
