@@ -3,11 +3,11 @@ package com.example.mtb.exceptions;
 import lombok.Getter;
 
 @Getter
-public class TheaterNotFoundByIdException extends RuntimeException {
+public class NoOfRowsExceedCapacityException extends RuntimeException {
 
     private String message;
 
-    public TheaterNotFoundByIdException(String message) {
+    public NoOfRowsExceedCapacityException(String message) {
         this.message = message;
     }
 }
