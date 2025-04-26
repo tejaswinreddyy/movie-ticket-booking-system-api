@@ -4,6 +4,7 @@ import com.example.mtb.entity.Seat;
 import com.example.mtb.enums.ScreenType;
 import lombok.Builder;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Builder
@@ -13,7 +14,7 @@ public record ScreenResponse(
         ScreenType screenType,
         Integer capacity,
         Integer noOfRows,
-        List<Seat> seats
+        SeatRespose seats
 
 )
 {}
