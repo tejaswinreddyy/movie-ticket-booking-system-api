@@ -1,5 +1,6 @@
 package com.example.mtb.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +21,10 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String seatId;
 
-    @ManyToOne
+    private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Screen screen;
 
     @CreatedDate
