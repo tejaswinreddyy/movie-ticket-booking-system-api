@@ -27,7 +27,12 @@ public class Seat {
     @JsonIgnore
     private Screen screen;
 
+    private Boolean isDelete;
+    private LocalDateTime deletedAt;
+
+
     @CreatedDate
     private LocalDateTime createdAt;
+
 
 }
