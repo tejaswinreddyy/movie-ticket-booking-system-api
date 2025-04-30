@@ -20,23 +20,43 @@ import java.time.LocalDateTime;
 @ToString
 @EntityListeners(AuditingEntityListener.class)
 public class UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_id")
     private String userId;
+
+    @Column(name = "username")
     private String username;
-    @Column(unique = true)
+
+    @Column(unique = true, name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "phone_number", length = 10)
     private String phoneNumber;
+
     @Enumerated(value = EnumType.STRING)
+    @Column(name = "user_role")
     private UserRole userRole;
+
+    @Column(name = "dob")
     private LocalDate dateOfBirth;
+
+    @Column(name = "is_delete")
     private boolean isDelete;
-    private LocalDateTime deletedAt;
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
 
 }
