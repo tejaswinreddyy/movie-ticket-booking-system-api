@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,10 +23,19 @@ public class Theater {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "theater_id")
     private String theaterId;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "address")
     private String address;
+
+    @Column(name = "city")
     private String city;
+
+    @Column(name = "landmark")
     private String landmark;
 
     @ManyToOne
@@ -35,11 +45,15 @@ public class Theater {
     private List<Screen> screens;
 
 
-
     @CreatedDate
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
     @LastModifiedDate
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+    @CreatedBy
     private String createdBy;
 
 
