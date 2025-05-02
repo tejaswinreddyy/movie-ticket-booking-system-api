@@ -39,6 +39,7 @@ public class Theater {
     private String landmark;
 
     @ManyToOne
+    @JoinColumn(name = "theater_owner_id")
     private TheaterOwner theaterOwner;
 
     @OneToMany(mappedBy = "theater")
