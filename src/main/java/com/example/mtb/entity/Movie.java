@@ -9,6 +9,7 @@ import lombok.ToString;
 
 import java.time.Duration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -41,6 +42,9 @@ public class Movie {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "genre")
     private Genre genre;
+
+    @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)
+    private List<Show> shows;
 
 
 }
