@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@EntityListeners(AuditingEntityListener.class)
 public class Movie {
 
     @Id
@@ -45,6 +47,9 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)
     private List<Show> shows;
+
+    @OneToMany(mappedBy = "movie", fetch = FetchType.EAGER)
+    private List<Feedback> feedbacks;
 
 
 }
