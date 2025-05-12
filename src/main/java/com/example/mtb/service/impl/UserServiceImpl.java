@@ -13,6 +13,7 @@ import com.example.mtb.repository.UserRepository;
 import com.example.mtb.security.SecurityConfig;
 import com.example.mtb.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -42,14 +44,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse editUser(UserUpdationRequest userRequest, String email) {
+        log.info("editing user...");
         if (userRepository.existsByEmail(email)) {
             UserDetails user = userRepository.findByEmail(email);
-
+            log.info("user is unique");
             if (! user.getEmail().equals(userRequest.email()) && userRepository.existsByEmail(userRequest.email())){
                 throw new UserExistByEmailException("User with the email already exists");
             }
 
-
+            log.info("mapping data...");
             user = copy(user, userRequest);
 
             return userMapper.userDetailsResponseMapper(user);

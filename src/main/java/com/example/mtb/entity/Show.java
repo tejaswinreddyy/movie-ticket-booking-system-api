@@ -35,10 +35,6 @@ public class Show {
     @JoinColumn(name = "screen_id")
     private Screen screen;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "theater_id")
-    private Theater theater;
-
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
