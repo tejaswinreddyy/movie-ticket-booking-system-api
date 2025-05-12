@@ -1,5 +1,6 @@
 package com.example.mtb.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -44,6 +46,10 @@ public class Theater {
 
     @OneToMany(mappedBy = "theater")
     private List<Screen> screens;
+
+    @OneToMany(mappedBy = "theater")
+    @JsonIgnore
+    private Set<Show> shows;
 
 
     @CreatedDate
