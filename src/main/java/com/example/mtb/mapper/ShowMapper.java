@@ -12,12 +12,11 @@ public class ShowMapper {
     public ShowResponse showResponseMapper(Show show) {
         if (show == null)
             return null;
-
-        return ShowResponse.builder()
-                .showId(show.getShowId())
-                .startsAt(show.getStartsAt())
-                .endsAt(show.getEndsAt())
-                .build();
+        return new ShowResponse(
+                show.getShowId(),
+                show.getStartsAt(),
+                show.getEndsAt()
+        );
     }
 
 }

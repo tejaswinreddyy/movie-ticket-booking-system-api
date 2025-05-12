@@ -2,7 +2,6 @@ package com.example.mtb.security;
 
 import com.example.mtb.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 public class UserDetailServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -21,10 +19,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         com.example.mtb.entity.UserDetails user = userRepository.findByEmail(username);
 
-        if(user == null) {
-            log.error("Failed to find User by name: {}", username);
+        if(user == null)
             throw new UsernameNotFoundException("Email not found in the database");
-        }
 
         return User.builder()
                 .username(user.getEmail())

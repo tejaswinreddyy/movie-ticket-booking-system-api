@@ -12,14 +12,13 @@ public class UserDetailsMapper {
     public UserResponse userDetailsResponseMapper(UserDetails userDetails){
         if(userDetails == null)
             return null;
-
-        return UserResponse.builder()
-                .userId(userDetails.getUserId())
-                .username(userDetails.getUsername())
-                .email(userDetails.getEmail())
-                .phoneNumber(userDetails.getPhoneNumber())
-                .userRole(userDetails.getUserRole())
-                .build();
+        return new UserResponse(
+                userDetails.getUserId(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                userDetails.getPhoneNumber(),
+                userDetails.getUserRole()
+        );
     }
 
 }

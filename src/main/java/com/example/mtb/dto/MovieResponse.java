@@ -2,12 +2,10 @@ package com.example.mtb.dto;
 
 import com.example.mtb.enums.Certificate;
 import com.example.mtb.enums.Genre;
-import lombok.Builder;
 
 import java.time.Duration;
 import java.util.Set;
 
-@Builder
 public record MovieResponse(
         String movieId,
         String title,

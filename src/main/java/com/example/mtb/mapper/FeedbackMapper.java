@@ -13,11 +13,11 @@ public class FeedbackMapper {
     public FeedbackResponse feedbackResponseMapper(Feedback feedback) {
         if (feedback == null)
             return null;
-        return FeedbackResponse.builder()
-                .feedbackId(feedback.getFeedbackId())
-                .rating(feedback.getRating())
-                .review(feedback.getReview())
-                .build();
+        return new FeedbackResponse(
+                feedback.getFeedbackId(),
+                feedback.getRating(),
+                feedback.getReview()
+        );
     }
 
 
