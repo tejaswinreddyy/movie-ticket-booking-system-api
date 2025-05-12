@@ -7,7 +7,7 @@ Spring:
   datasource:
     url: "${MYSQL_URL:jdbc:mysql://localhost:3306/movie-ticket-booking-system?createDatabaseIfNotExist=true}"
     username: "${MYSQL_USERNAME:root}"
-    password: "${MYSQL_PWD:root}"
+    password: "${MYSQL_PWD}"
 
   #JPA Details
   jpa:
@@ -22,3 +22,7 @@ app:
     access-duration: "${TOKEN_ACCESS_DURATION:5}" # in minutes
     refresh-duration: "${TOKEN_REFRESH_DURATION:1440}" #in minutes 24*60
 
+#Context-path
+server:
+  servlet:
+    context-path: /api/v1
