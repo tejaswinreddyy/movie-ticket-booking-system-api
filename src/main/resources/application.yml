@@ -22,3 +22,9 @@ app:
     access-duration: "${TOKEN_ACCESS_DURATION:5}" # in minutes
     refresh-duration: "${TOKEN_REFRESH_DURATION:1440}" #in minutes 24*60
 
+# Context Path
+server:
+  servlet:
+    context-path: /api/v1
+
+
