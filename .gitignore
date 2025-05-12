@@ -33,4 +33,5 @@ build/
 .vscode/
 .gitattributes
 
+### .env files###
 .env
