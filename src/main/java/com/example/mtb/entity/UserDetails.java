@@ -48,15 +48,15 @@ public class UserDetails {
     @Column(name = "is_delete")
     private boolean isDelete;
 
-    @Column(name = "deleted_at")
+    @Column(name = "deleted_at",  columnDefinition = "TIMESTAMP(6)")
     private Instant deletedAt;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false,  columnDefinition = "TIMESTAMP(6)")
     private Instant createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = false,  columnDefinition = "TIMESTAMP(6)")
     private Instant updatedAt;
 
 }

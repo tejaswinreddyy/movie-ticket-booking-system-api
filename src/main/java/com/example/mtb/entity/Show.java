@@ -24,10 +24,10 @@ public class Show {
     @Column(name = "show_id")
     private String showId;
 
-    @Column(name = "starts_at")
+    @Column(name = "starts_at", columnDefinition = "TIMESTAMP(6)")
     private Instant startsAt;
 
-    @Column(name = "ends_at")
+    @Column(name = "ends_at",  columnDefinition = "TIMESTAMP(6)")
     private Instant endsAt;
 
 
@@ -39,14 +39,17 @@ public class Show {
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
+    @ManyToOne
+    @JoinColumn(name = "theater_id")
+    private Theater theater;
 
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false,  columnDefinition = "TIMESTAMP(6)")
     private Instant createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = false,  columnDefinition = "TIMESTAMP(6)")
     private Instant updatedAt;
 
     @CreatedBy

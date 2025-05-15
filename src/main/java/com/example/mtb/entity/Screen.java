@@ -29,6 +29,7 @@ public class Screen {
     private String screenId;
 
     @Column(name = "screen_type")
+    @Enumerated(EnumType.STRING)
     private ScreenType screenType;
 
     @Column(name = "capacity")
@@ -51,11 +52,11 @@ public class Screen {
     private Set<Show> shows;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false,  columnDefinition = "TIMESTAMP(6)")
     private Instant createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = false,  columnDefinition = "TIMESTAMP(6)")
     private Instant updatedAt;
 
     @CreatedBy

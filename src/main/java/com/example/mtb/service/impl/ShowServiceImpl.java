@@ -1,9 +1,11 @@
 package com.example.mtb.service.impl;
 
+import com.example.mtb.dto.MovieShowsRequest;
 import com.example.mtb.dto.ShowResponse;
 import com.example.mtb.entity.Movie;
 import com.example.mtb.entity.Screen;
 import com.example.mtb.entity.Show;
+import com.example.mtb.enums.ScreenType;
 import com.example.mtb.exceptions.MovieNotFoundByIdException;
 import com.example.mtb.exceptions.ScreenNotFoundByIdException;
 import com.example.mtb.exceptions.ShowTimeConflictException;
@@ -15,12 +17,15 @@ import com.example.mtb.repository.ShowRepository;
 import com.example.mtb.repository.TheaterRepository;
 import com.example.mtb.service.ShowService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.time.*;
 import java.util.Set;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ShowServiceImpl implements ShowService {
@@ -54,7 +59,7 @@ public class ShowServiceImpl implements ShowService {
                         Instant showEndTime = s.getEndsAt();
                         Instant movieCompletionTime = instantStartTime.plus(movie.getRuntime());
 
-                        if (! ( movieCompletionTime.isBefore(showStartTime) || instantStartTime.isAfter(showEndTime) )) {
+                        if (!(movieCompletionTime.isBefore(showStartTime) || instantStartTime.isAfter(showEndTime))) {
                             throw new ShowTimeConflictException("Another Show is been Booked");
                         }
                     }
@@ -74,14 +79,46 @@ public class ShowServiceImpl implements ShowService {
         throw new TheaterNotFoundByIdException("Theater Id not found in the database");
     }
 
+    @Override
+    public String fetchShows(String movieId, MovieShowsRequest showsRequest) {
+        Instant start = showsRequest.date()
+                .atStartOfDay(ZoneOffset.UTC)
+                .toInstant();
+
+        log.info(start.toString());
+
+        Instant end = showsRequest.date()
+                .plusDays(1)
+                .atStartOfDay(ZoneOffset.UTC)
+                .minusNanos(1)
+                .toInstant();
+
+        log.info(end.toString());
+        var pageable = (Pageable) PageRequest.of(showsRequest.page() - 1, showsRequest.size());
+        log.info(pageable.toString());
+//        var pageOfTheaterIds = theaterRepository.findTheaterIdsWithMatchingShows(movieId, start, end, showsRequest.screenType().name(), pageable);
+//        var pageOfTheaterIds = theaterRepository.findByScreens_ScreenTypeAndShows_Movie_MovieIdAndShows_StartsAtBetween(
+//                showsRequest.screenType(), movieId, start, end, pageable
+//        );
+//        log.info(String.valueOf(pageOfTheaterIds.getTotalElements()));
+
+        var setOfTheaterIds = showRepository.findDistinctByStartsAtBetweenAndMovie_MovieIdAndScreen_ScreenType(
+                start, end, movieId, showsRequest.screenType()
+        );
+        log.info(setOfTheaterIds.toString());
+
+        return "ok";
+    }
+
+
     private Show copy(Show show, Long startTime, Screen screen, Movie movie) {
         show.setScreen(screen);
         show.setMovie(movie);
         Instant instantStartTime = Instant.ofEpochMilli(startTime);
         show.setStartsAt(instantStartTime);
         Instant endTime = instantStartTime.plus(movie.getRuntime());
-        System.out.println(endTime);
         show.setEndsAt(endTime);
+        show.setTheater(screen.getTheater());
         showRepository.save(show);
         return show;
     }

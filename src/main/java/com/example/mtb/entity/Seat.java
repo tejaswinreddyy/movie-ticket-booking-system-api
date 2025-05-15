@@ -34,12 +34,12 @@ public class Seat {
     @Column(name = "is_delete")
     private boolean isDelete;
 
-    @Column(name = "deleted_at")
+    @Column(name = "deleted_at",  columnDefinition = "TIMESTAMP(6)")
     private Instant deletedAt;
 
 
     @CreatedDate
-    @Column(name = "created_at")
+    @Column(name = "created_at",  columnDefinition = "TIMESTAMP(6)")
     private Instant createdAt;
 
 
