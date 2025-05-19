@@ -1,5 +1,6 @@
 package com.example.mtb.entity;
 
+import com.example.mtb.converter.InstantToLongConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,9 +25,11 @@ public class Show {
     @Column(name = "show_id")
     private String showId;
 
+//    @Convert(converter = InstantToLongConverter.class)
     @Column(name = "starts_at")
     private Instant startsAt;
 
+//    @Convert(converter = InstantToLongConverter.class)
     @Column(name = "ends_at")
     private Instant endsAt;
 
@@ -39,6 +42,9 @@ public class Show {
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
+    @ManyToOne
+    @JoinColumn(name = "theater_id")
+    private Theater theater;
 
 
     @CreatedDate
