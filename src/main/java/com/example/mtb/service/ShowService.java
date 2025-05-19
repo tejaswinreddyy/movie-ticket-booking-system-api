@@ -3,15 +3,15 @@ package com.example.mtb.service;
 
 import com.example.mtb.dto.MovieShowsRequest;
 import com.example.mtb.dto.ShowResponse;
-import com.example.mtb.enums.ScreenType;
+import com.example.mtb.dto.TheaterShowProjection;
 import jakarta.validation.constraints.NotNull;
-
-import java.time.LocalDate;
+import org.springframework.data.domain.Page;
 
 public interface ShowService {
 
 
-    ShowResponse addShow(String theaterId, String screenId, String movieId, @NotNull Long startTime);
+    ShowResponse addShow(String theaterId, String screenId, String movieId, @NotNull Long startTime, String zoneId);
 
-    String fetchShows(String movieId, MovieShowsRequest showsRequest);
+    Page<TheaterShowProjection> fetchShows(String movieId, MovieShowsRequest showsRequest, String city);
+
 }

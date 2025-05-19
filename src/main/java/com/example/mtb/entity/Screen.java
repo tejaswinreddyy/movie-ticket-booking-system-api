@@ -52,11 +52,11 @@ public class Screen {
     private Set<Show> shows;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false,  columnDefinition = "TIMESTAMP(6)")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", nullable = false,  columnDefinition = "TIMESTAMP(6)")
+    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
     @CreatedBy

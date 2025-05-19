@@ -9,7 +9,7 @@ public record ShowResponse(
 
         String showId,
         Instant startsAt,
-        Instant endsAt
+        Instant endsAt,
 
-) {
+        String screenId, com.example.mtb.enums.ScreenType screenType) {
 }

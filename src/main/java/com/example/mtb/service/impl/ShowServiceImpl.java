@@ -2,28 +2,33 @@ package com.example.mtb.service.impl;
 
 import com.example.mtb.dto.MovieShowsRequest;
 import com.example.mtb.dto.ShowResponse;
+import com.example.mtb.dto.TheaterShowProjection;
 import com.example.mtb.entity.Movie;
 import com.example.mtb.entity.Screen;
 import com.example.mtb.entity.Show;
-import com.example.mtb.enums.ScreenType;
-import com.example.mtb.exceptions.MovieNotFoundByIdException;
-import com.example.mtb.exceptions.ScreenNotFoundByIdException;
-import com.example.mtb.exceptions.ShowTimeConflictException;
-import com.example.mtb.exceptions.TheaterNotFoundByIdException;
+import com.example.mtb.entity.Theater;
+import com.example.mtb.exceptions.*;
 import com.example.mtb.mapper.ShowMapper;
+import com.example.mtb.mapper.TheaterMapper;
 import com.example.mtb.repository.MovieRepository;
 import com.example.mtb.repository.ScreenRepository;
 import com.example.mtb.repository.ShowRepository;
 import com.example.mtb.repository.TheaterRepository;
 import com.example.mtb.service.ShowService;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -35,10 +40,11 @@ public class ShowServiceImpl implements ShowService {
     private final MovieRepository movieRepository;
     private final ShowRepository showRepository;
     private final ShowMapper showMapper;
+    private final TheaterMapper theaterMapper;
 
 
     @Override
-    public ShowResponse addShow(String theaterId, String screenId, String movieId, Long startTime) {
+    public ShowResponse addShow(String theaterId, String screenId, String movieId, Long startTime, @NotNull String zoneId) {
 
         if (theaterRepository.existsById(theaterId)) {
 
@@ -64,7 +70,7 @@ public class ShowServiceImpl implements ShowService {
                         }
                     }
 
-                    Show show = copy(new Show(), startTime, screen, movie);
+                    Show show = copy(new Show(), startTime, screen, movie, zoneId);
 
 
                     return showMapper.showResponseMapper(show);
@@ -79,42 +85,72 @@ public class ShowServiceImpl implements ShowService {
         throw new TheaterNotFoundByIdException("Theater Id not found in the database");
     }
 
+
     @Override
-    public String fetchShows(String movieId, MovieShowsRequest showsRequest) {
-        Instant start = showsRequest.date()
-                .atStartOfDay(ZoneOffset.UTC)
-                .toInstant();
+    public Page<TheaterShowProjection> fetchShows(String movieId, MovieShowsRequest showsRequest, String city) {
 
-        log.info(start.toString());
+        ZoneId zoneId = showsRequest.zoneId() == null || showsRequest.zoneId().isBlank()
+                ? ZoneId.of("UTC")
+                : ZoneId.of(ZoneId.SHORT_IDS.getOrDefault(showsRequest.zoneId().toUpperCase(), "UTC"));
 
-        Instant end = showsRequest.date()
-                .plusDays(1)
-                .atStartOfDay(ZoneOffset.UTC)
-                .minusNanos(1)
-                .toInstant();
+        if(city == null || city.isBlank()){
+            throw new CityNotFoundException("No city found by name");
+        }
 
-        log.info(end.toString());
-        var pageable = (Pageable) PageRequest.of(showsRequest.page() - 1, showsRequest.size());
-        log.info(pageable.toString());
-//        var pageOfTheaterIds = theaterRepository.findTheaterIdsWithMatchingShows(movieId, start, end, showsRequest.screenType().name(), pageable);
-//        var pageOfTheaterIds = theaterRepository.findByScreens_ScreenTypeAndShows_Movie_MovieIdAndShows_StartsAtBetween(
-//                showsRequest.screenType(), movieId, start, end, pageable
-//        );
-//        log.info(String.valueOf(pageOfTheaterIds.getTotalElements()));
+        Instant start = showsRequest.date().atStartOfDay(zoneId).toInstant();
+        Instant end = showsRequest.date().plusDays(1).atStartOfDay(zoneId).minusNanos(1).toInstant();
 
-        var setOfTheaterIds = showRepository.findDistinctByStartsAtBetweenAndMovie_MovieIdAndScreen_ScreenType(
-                start, end, movieId, showsRequest.screenType()
+        Pageable pageable = PageRequest.of(showsRequest.page() - 1, showsRequest.size());
+
+        // Step 1: Fetch paged theater IDs
+        Page<String> theaterIdsPage = showRepository.findTheaterIdsWithMatchingShowsAndCity(
+                movieId, start, end, showsRequest.screenType(), city,  pageable
         );
-        log.info(setOfTheaterIds.toString());
 
-        return "ok";
+        List<String> theaterIds = theaterIdsPage.getContent();
+
+        // Step 2: Fetch shows for those theaters
+        List<Show> shows = showRepository.findShowsForTheaters(
+                movieId, start, end, showsRequest.screenType(), theaterIds
+        );
+
+        // Step 3: Group shows by theater
+        Map<String, List<Show>> grouped = shows.stream()
+                .collect(Collectors.groupingBy(show -> show.getTheater().getTheaterId()));
+
+        // Step 4: Map to projections
+        List<TheaterShowProjection> results = theaterIds.stream()
+                .map(theaterId -> {
+                    Show show = grouped.get(theaterId).get(0); // get any show to extract theater
+                    Theater theater = show.getTheater();
+
+                    List<ShowResponse> showProjections = grouped.get(theaterId).stream()
+                            .map(s -> new ShowResponse(
+                                    s.getShowId(),
+                                    s.getStartsAt(),
+                                    s.getEndsAt(),
+                                    s.getScreen().getScreenId(),
+                                    s.getScreen().getScreenType()
+                            ))
+                            .toList();
+
+                    return new TheaterShowProjection(
+                            theater.getTheaterId(),
+                            theater.getName(),
+                            theater.getAddress(),
+                            showProjections
+                    );
+                })
+                .toList();
+
+        return new PageImpl<>(results, pageable, theaterIdsPage.getTotalElements());
     }
 
-
-    private Show copy(Show show, Long startTime, Screen screen, Movie movie) {
+    private Show copy(Show show, Long startTime, Screen screen, Movie movie, String zoneId) {
         show.setScreen(screen);
         show.setMovie(movie);
         Instant instantStartTime = Instant.ofEpochMilli(startTime);
+        log.info(instantStartTime.toString());
         show.setStartsAt(instantStartTime);
         Instant endTime = instantStartTime.plus(movie.getRuntime());
         show.setEndsAt(endTime);

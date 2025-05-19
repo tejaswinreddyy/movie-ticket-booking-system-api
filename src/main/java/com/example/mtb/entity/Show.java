@@ -1,5 +1,6 @@
 package com.example.mtb.entity;
 
+import com.example.mtb.converter.InstantToLongConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,10 +25,12 @@ public class Show {
     @Column(name = "show_id")
     private String showId;
 
-    @Column(name = "starts_at", columnDefinition = "TIMESTAMP(6)")
+//    @Convert(converter = InstantToLongConverter.class)
+    @Column(name = "starts_at")
     private Instant startsAt;
 
-    @Column(name = "ends_at",  columnDefinition = "TIMESTAMP(6)")
+//    @Convert(converter = InstantToLongConverter.class)
+    @Column(name = "ends_at")
     private Instant endsAt;
 
 
@@ -45,11 +48,11 @@ public class Show {
 
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false,  columnDefinition = "TIMESTAMP(6)")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     @LastModifiedDate
-    @Column(name = "updated_at", nullable = false,  columnDefinition = "TIMESTAMP(6)")
+    @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
     @CreatedBy

@@ -3,15 +3,11 @@ package com.example.mtb.dto;
 import com.example.mtb.enums.ScreenType;
 
 import java.time.Instant;
+import java.util.List;
 
-public interface TheaterShowProjection {
-    Long getTheaterId();
-    String getTheaterName();
-    String getLandmark();
-    String getCity();
-    Long getScreenId();
-    ScreenType getScreenType();
-    Long getShowId();
-    Instant getShowStartsAt();
-    Instant getShowEndsAt();
-}
+public record TheaterShowProjection (
+        String theaterId,
+        String theaterName,
+        String address,
+        List<ShowResponse> shows
+) {}

@@ -1,5 +1,6 @@
 package com.example.mtb.exceptions.handler;
 
+import com.example.mtb.exceptions.CityNotFoundException;
 import com.example.mtb.exceptions.TheaterNotFoundByIdException;
 import com.example.mtb.util.ErrorStructure;
 import com.example.mtb.util.RestResponseBuilder;
@@ -17,6 +18,11 @@ public class TheaterExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ErrorStructure> handleTheaterNotFoundByIdException(TheaterNotFoundByIdException ex){
+        return responseBuilder.error(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorStructure> handleCityNotFoundException(CityNotFoundException ex){
         return responseBuilder.error(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
